@@ -17,12 +17,13 @@ public class HomeWizardGui extends JFrame {
 	private ArrayList<SwitchPanel> switchpanels;
 	private Timer timer;
 	
-	public HomeWizardGui(String ipadres, String password) throws HWException {
+	//Default portnumber=80
+	public HomeWizardGui(String ipadres, String password, String port) throws HWException {
 		switchpanels = new ArrayList<SwitchPanel>();
 		timer = new Timer();
 		
 		//Init HWSystem
-		hwsystem = new HWSystem(ipadres, password);
+		hwsystem = new HWSystem(ipadres, password, port);
 		hwsystem.init();
 		
 		//Init frame
@@ -60,7 +61,7 @@ public class HomeWizardGui extends JFrame {
 	public static void main(String[] args) {
 		JFrame frame = null;
 		try {
-			frame = new HomeWizardGui("192.168.1.6", "secret");
+			frame = new HomeWizardGui("192.168.1.6", "secret", "80");
 		} catch (HWException e) {
 			e.printStackTrace();
 		}
