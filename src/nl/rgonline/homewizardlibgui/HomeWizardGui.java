@@ -4,22 +4,21 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import nl.rgonline.homewizardlib.HWSwitch;
 import nl.rgonline.homewizardlib.HWSystem;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 public class HomeWizardGui extends JFrame {
+
 	private HWSystem hwsystem;
 	private ArrayList<SwitchPanel> switchpanels;
 	private Timer timer;
 	
 	//Default portnumber=80
 	public HomeWizardGui(String ipadres, String password, String port) throws HWException {
-		switchpanels = new ArrayList<SwitchPanel>();
+		switchpanels = new ArrayList<>();
 		timer = new Timer();
 		
 		//Init HWSystem
@@ -27,7 +26,7 @@ public class HomeWizardGui extends JFrame {
 		hwsystem.init();
 		
 		//Init frame
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setBounds(100,100,600,400);
 		this.setTitle("Homewizard GUI, Homewizard version: " + hwsystem.getHWVersion());
 		

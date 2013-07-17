@@ -1,5 +1,7 @@
 package nl.rgonline.homewizardlib;
 
+import java.io.IOException;
+
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.exceptions.HWToEarlyException;
 
@@ -71,7 +73,7 @@ public final class HWConnection {
 	
 	/**
 	 * Toggles the switch with given id on. equivaltn to http://<ip>/<password>/sw/<id>/<OnOrOff>
-	 * @param The id of the switch to toggle
+	 * @param id The id of the switch to toggle
 	 */
 	protected String doToggleSwitch(int id, boolean turnOn) throws HWException {
 		String response = "";
@@ -91,7 +93,7 @@ public final class HWConnection {
 	
 	/**
 	 * Sets dimlevel of the dimmer with given id on. equivaltn to http://<ip>/<password>/sw/dim/<id>/<dimLevel>
-	 * @param The id of the dimmer
+	 * @param id The id of the dimmer
 	 */
 	protected String setDimLevel(int id, int dimLevel) throws HWException {
 		String response = "";
@@ -104,12 +106,12 @@ public final class HWConnection {
 	}
 	
 	/**
-	 * Does a blocking call to the given URL
-	 * @param url
-	 * @return
-	 * @throws Exception
+	 * Does a blocking call to the given URL.
+	 * @param url URL to open.
+	 * @return Returned data.
+	 * @throws IOException On any IO error.
 	 */
-	private String getData(String url) throws Exception {
+	private String getData(String url) throws IOException {
 		//Build up connection
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(url);

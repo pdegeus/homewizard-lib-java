@@ -10,7 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * HWSystem is a, reversed enginered, interface to the HomeWizard system ( http://www.homewizard.nl).
+ * HWSystem is a, reversed engineered, interface to the HomeWizard system (http://www.homewizard.nl).
  * @version 1, Tested with sensors on HomeWizard version 1.3104
  * @author Ruud Greven
  *
@@ -62,7 +62,7 @@ public final class HWSystem {
 	private void initSwitches(JSONObject response) throws HWException {
 		try {
 			JSONArray switchesJSON = response.getJSONArray("switches");
-			switches = new ArrayList<HWSwitch>();
+			switches = new ArrayList<>();
 			
 			for (int i = 0; i < switchesJSON.length(); i++) {
 				JSONObject switchJSON = switchesJSON.getJSONObject(i);
@@ -100,7 +100,7 @@ public final class HWSystem {
 	
 	/**
 	 * Find the switch with the given id.
-	 * @param The id to search for
+	 * @param id The id to search for
 	 * @return The right HWSwitch if the switch is found, else NULL
 	 * @throws HWException, if this HWSystem is not initialized yet
 	 */
@@ -118,7 +118,7 @@ public final class HWSystem {
 	
 	/**
 	 * Find the switch with the given name.
-	 * @param The name to search for
+	 * @param name The name to search for
 	 * @return The right HWSwitch if the switch is found, else NULL
 	 * @throws HWException, if this HWSystem is not initialized yet
 	 */
@@ -204,7 +204,7 @@ public final class HWSystem {
 	
 	/**
 	 * Reads the server response and returns the "response" part as a JSON Object
-	 * @param The jsonString from the server
+	 * @param jsonString The response from the server.
 	 * @return a JSONObject representing the response.
 	 * @throws HWException
 	 */
