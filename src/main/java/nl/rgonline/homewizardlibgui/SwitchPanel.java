@@ -7,9 +7,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import nl.rgonline.homewizardlib.HWSwitch;
+import nl.rgonline.homewizardlib.switches.HWSwitch;
+import nl.rgonline.homewizardlib.exceptions.HWException;
 
 public class SwitchPanel extends JPanel {
+
 	private HWSwitch theSwitch;
 	private JLabel idLabel;
 	private JLabel nameLabel;
@@ -36,14 +38,19 @@ public class SwitchPanel extends JPanel {
 		toggleButton = new JButton("Toggle");
 		toggleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				theSwitch.doToggle();
-			}
+                try {
+                    theSwitch.toggle();
+                } catch (HWException e) {
+                    //FIXME: Report error in UI
+                    e.printStackTrace();
+                }
+            }
 		});
 		
 		this.add(toggleButton, BorderLayout.EAST);
 	}
 	
-	public void updateSwitchStatus() {
+	public void updateSwitchStatus() throws HWException {
 		boolean isOn = theSwitch.isOn();
 		if (isOn) {
 			statusLabel.setText("on");
