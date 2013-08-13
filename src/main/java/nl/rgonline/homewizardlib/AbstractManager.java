@@ -25,6 +25,7 @@ public abstract class AbstractManager<T extends AbstractHwEntity> {
 
     /**
      * Updates the status of all loaded entities.
+     * @throws HWException On any IO or JSON error.
      */
     protected abstract void updateStatus() throws HWException;
 

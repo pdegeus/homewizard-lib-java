@@ -2,6 +2,7 @@ package nl.rgonline.homewizardlib.config;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
 
@@ -103,8 +104,13 @@ public class HWConfigItem<T> {
     }
 
     private String getRawValue() {
+        Properties settings = HWConfig.getProjectSettings();
+        if (settings == null) {
+            return null;
+        }
+
         String propName = getPropertyName();
-        return HWConfig.getProjectSettings().getProperty(propName);
+        return settings.getProperty(propName);
     }
 
     @SuppressWarnings("unchecked")

@@ -2,6 +2,7 @@ package nl.rgonline.homewizardlib;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.sensors.SensorManager;
 import nl.rgonline.homewizardlib.switches.SwitchManager;
@@ -31,11 +32,22 @@ public final class HWSystem {
     private double hwVersion;
 
     /**
-     * Constructor.
+     * Constructor reading connection details from config file..
      * @throws HWException On any initialization error.
      */
-	public HWSystem() throws HWException {
-		connection = new HWConnection();
+    public HWSystem() throws HWException {
+        this(HWConfig.HOST.getValue(), HWConfig.PORT.getValue(), HWConfig.PASSWORD.getValue());
+    }
+
+    /**
+     * Constructor using provided connection details.
+     * @param host Host to connect to.
+     * @param port Port to connect to.
+     * @param password Password to use.
+     * @throws HWException On any initialization error.
+     */
+	public HWSystem(String host, int port, String password) throws HWException {
+		connection = new HWConnection(host, port, password);
         switchManager = new SwitchManager(connection);
         sensorManager = new SensorManager(connection);
 

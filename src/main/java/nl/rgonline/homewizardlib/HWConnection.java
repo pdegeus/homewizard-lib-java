@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 import org.apache.http.client.HttpClient;
@@ -31,12 +30,11 @@ public final class HWConnection {
 
     /**
      * Constructor.
+     * @param host Host to connect to.
+     * @param port Port to connect to.
+     * @param password Password to use.
      */
-    HWConnection() {
-        String host = HWConfig.HOST.getValue();
-        int port = HWConfig.PORT.getValue();
-        String password = HWConfig.PASSWORD.getValue();
-
+    HWConnection(String host, int port, String password) {
 		this.connectionString = String.format("http://%s:%d/%s", host, port, password);
         this.httpClient = new DefaultHttpClient();
 	}
@@ -134,11 +132,11 @@ public final class HWConnection {
                 throw new HWException("HomeWizard returns not an OK status: " + jsonString);
             }
 
-            if (returnResponse) {
+            if (returnResponse && retVal.has("response")) {
                 retVal = retVal.getJSONObject("response");
             }
         } catch (JSONException e) {
-            throw new HWException("Error parsing JSON", e);
+            throw new HWException("Error parsing JSON:\n" + jsonString, e);
         }
 
         return retVal;

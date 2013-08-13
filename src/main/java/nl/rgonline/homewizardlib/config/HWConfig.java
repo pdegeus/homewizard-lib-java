@@ -81,9 +81,9 @@ public class HWConfig {
             }
 
             if (properties == null) {
-                throw new ConfigurationException(
-                    "Could not find suitable config file. Set the system property " + CFG_OVERRIDE_PROPERTY +
-                    " to point to your config file, or place a file named " + DEFAULT_CFG_FILE + " in you working dir."
+                log.warn(
+                    "Could not find suitable config file. Set the system property '{}' to point to your config file, " +
+                    "or place a file named '{}' in your working dir.", CFG_OVERRIDE_PROPERTY, DEFAULT_CFG_FILE
                 );
             }
 

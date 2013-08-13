@@ -1,7 +1,6 @@
 package nl.rgonline.homewizardlib.switches;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.exceptions.HWException;
@@ -11,11 +10,10 @@ import nl.rgonline.homewizardlib.exceptions.HWException;
  * @author Ruud Greven
  * @author pdegeus
  */
-@Data
-@EqualsAndHashCode
 @ToString(callSuper = true)
 public class HWDimmer extends HWSwitch {
 
+    @Getter
 	private int dimLevel;
 
     /**
@@ -37,6 +35,7 @@ public class HWDimmer extends HWSwitch {
      * @throws HWException On IO failures.
      */
     void setDimLevel(int dimLevel) throws HWException {
+        this.dimLevel = dimLevel;
         getConnection().doGet("/sw/dim/", getId(), "/", dimLevel);
     }
 	

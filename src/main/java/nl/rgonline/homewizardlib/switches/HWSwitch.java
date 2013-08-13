@@ -1,6 +1,5 @@
 package nl.rgonline.homewizardlib.switches;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +15,6 @@ import nl.rgonline.homewizardlib.exceptions.HWException;
  */
 @Slf4j
 @ToString(callSuper=true)
-@EqualsAndHashCode
 public class HWSwitch extends AbstractHwEntity {
 
     @Getter @Setter
@@ -33,16 +31,28 @@ public class HWSwitch extends AbstractHwEntity {
         super(connection, id, name);
 		this.on = isOn;
 	}
-	
+
+    /**
+     * @return True if this switch is turned off.
+     * @throws HWException On IO failures.
+     */
 	public boolean isOff() throws HWException {
 		return !isOn();
 	}
-	
+
+    /**
+     * Turn on this switch.
+     * @throws HWException On IO failures.
+     */
 	public void turnOn() throws HWException {
         toggle(true);
         on = true;
     }
-	
+
+    /**
+     * Turn off this switch.
+     * @throws HWException On IO failures.
+     */
 	public void turnOff() throws HWException {
         toggle(false);
         on = false;

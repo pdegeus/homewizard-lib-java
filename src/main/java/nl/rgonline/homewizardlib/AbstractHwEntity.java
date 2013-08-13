@@ -1,6 +1,7 @@
 package nl.rgonline.homewizardlib;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -9,6 +10,7 @@ import lombok.ToString;
  * @author pdegeus
  */
 @Data
+@EqualsAndHashCode(of="id")
 @ToString(exclude="connection")
 public abstract class AbstractHwEntity {
 
@@ -20,7 +22,7 @@ public abstract class AbstractHwEntity {
 
     /**
      * Constructor.
-     * @param connection Conneciton to use.
+     * @param connection Connection to use.
      * @param id Entity ID.
      * @param name Entity name.
      */
