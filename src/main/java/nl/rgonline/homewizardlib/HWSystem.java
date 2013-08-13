@@ -6,6 +6,7 @@ import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.sensors.SensorManager;
 import nl.rgonline.homewizardlib.switches.SwitchManager;
+import nl.rgonline.homewizardlib.thermo.ThermoManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,9 @@ public final class HWSystem {
     private SensorManager sensorManager;
 
     @Getter
+    private ThermoManager thermoManager;
+
+    @Getter
     private double hwVersion;
 
     /**
@@ -50,6 +54,7 @@ public final class HWSystem {
 		connection = new HWConnection(host, port, password);
         switchManager = new SwitchManager(connection);
         sensorManager = new SensorManager(connection);
+        thermoManager = new ThermoManager(connection);
 
         readStatus();
         log.info("HWSystem initialized, HW version: " + hwVersion);

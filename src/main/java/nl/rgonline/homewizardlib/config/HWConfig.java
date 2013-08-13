@@ -34,6 +34,9 @@ public class HWConfig {
     /** Config item for sensors status update interval */
     public static final HWConfigItem<Integer> SENSOR_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.sensor", Integer.class, 4000);
 
+    /** Config item for thermometer data update interval */
+    public static final HWConfigItem<Integer> THERMO_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.thermo", Integer.class, 20000);
+
 
     /* Config loader */
 

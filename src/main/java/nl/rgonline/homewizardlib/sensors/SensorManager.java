@@ -9,6 +9,7 @@ import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,9 +57,14 @@ public class SensorManager extends AbstractManager<HWSensor> {
 
                     int id = sensorJson.getInt("id");
                     String name = sensorJson.getString("name");
-                    boolean isOn = sensorJson.getString("status").equals("on");
+                    SensorType type = SensorType.forString(sensorJson.getString("type"));
+                    boolean isFavorite = BooleanUtils.toBoolean(sensorJson.getString("favorite"));
 
-                    HWSensor sensor = new HWSensor(connection, id, name, isOn);
+                    String status = sensorJson.getString("status");
+                    boolean isOn = BooleanUtils.toBoolean(status);
+                    String lastEvent = (status == null) ? null : sensorJson.getString("timestamp");
+
+                    HWSensor sensor = new HWSensor(connection, id, name, type, lastEvent, isFavorite, isOn);
                     sensors.put(id, sensor);
                 }
             } catch (JSONException e) {
@@ -86,13 +92,16 @@ public class SensorManager extends AbstractManager<HWSensor> {
                 JSONObject sensorJson = jsonSensors.getJSONObject(i);
 
                 int id = sensorJson.getInt("id");
-                boolean isOn = sensorJson.getString("status").equals("on");
+                String status = sensorJson.getString("status");
+                boolean isOn = BooleanUtils.toBoolean(status);
+                String lastEvent = (status == null) ? null : sensorJson.getString("timestamp");
 
                 HWSensor sensor = sensors.get(id);
                 if (sensor == null) {
                     log.warn("Unknown sensor ID: " + id);
                 } else {
                     sensor.setOn(isOn);
+                    sensor.setLastEventTime(lastEvent);
                     sensor.updated();
                 }
             }

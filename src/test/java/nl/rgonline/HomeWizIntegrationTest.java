@@ -22,6 +22,8 @@ public class HomeWizIntegrationTest {
         log.info("Sensors: {}", hw.getSensorManager().getAll());
         log.info("Sensor 1: {}", hw.getSensorManager().get(1).isOn());
 
+        log.info("Thermos: {}", hw.getThermoManager().getAll());
+
         log.info("Sleeping 2.5s to test reloading");
         Thread.sleep(2500);
 

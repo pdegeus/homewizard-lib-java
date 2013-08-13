@@ -21,11 +21,12 @@ public class HWDimmer extends HWSwitch {
      * @param connection Connection to use.
      * @param id Dimmer ID.
      * @param name Dimmer name.
+     * @param isFavorite True if switch is marked as favorite.
      * @param isOn Current on/off state.
      * @param dimLevel Current dim-level.
      */
-    public HWDimmer(HWConnection connection, int id, String name, boolean isOn, int dimLevel) {
-		super(connection, id, name, isOn);
+    public HWDimmer(HWConnection connection, int id, String name, boolean isFavorite, boolean isOn, int dimLevel) {
+		super(connection, id, name, isFavorite, isOn);
 		this.dimLevel = dimLevel;
 	}
 

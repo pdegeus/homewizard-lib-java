@@ -25,10 +25,11 @@ public class HWSwitch extends AbstractHwEntity {
      * @param connection Connection to use.
      * @param id Switch ID.
      * @param name Switch name.
+     * @param isFavorite True if switch is marked as favorite.
      * @param isOn True if switch is on.
      */
-    public HWSwitch(HWConnection connection, int id, String name, boolean isOn) {
-        super(connection, id, name);
+    public HWSwitch(HWConnection connection, int id, String name, boolean isFavorite, boolean isOn) {
+        super(connection, id, name, isFavorite);
 		this.on = isOn;
 	}
 

@@ -9,6 +9,7 @@ import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,25 +39,31 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
         if (!initialized || force) {
             JSONObject response = connection.doGet("/get-sensors");
 
+            // "switches": [
+            //   { "id": 0, "status": "on",  "name": "Woonkamer 1", "dimmer": "no", "favorite": "yes", "type": "switch" },
+            //   { "id": 1, "status": "off", "name": "Woonkamer 2", "dimmer": "no", "favorite": "no",  "type": "switch" }
+            // ]
+
             try {
-                JSONArray switchesJSON = response.getJSONArray("switches");
-                int numSwitches = switchesJSON.length();
+                JSONArray jsonSwitches = response.getJSONArray("switches");
+                int numSwitches = jsonSwitches.length();
 
                 switches = new HashMap<>();
 
                 for (int i = 0; i < numSwitches; i++) {
-                    JSONObject switchJSON = switchesJSON.getJSONObject(i);
+                    JSONObject switchJson = jsonSwitches.getJSONObject(i);
 
-                    int id = switchJSON.getInt("id");
-                    String name = switchJSON.getString("name");
-                    boolean isOn = switchJSON.getString("status").equals("on");
+                    int id = switchJson.getInt("id");
+                    String name = switchJson.getString("name");
+                    boolean isFavorite = BooleanUtils.toBoolean(switchJson.getString("favorite"));
+                    boolean isOn = BooleanUtils.toBoolean(switchJson.getString("status"));
 
-                    if (switchJSON.getString("dimmer").equals("no")) {
-                        HWSwitch theSwitch = new HWSwitch(connection, id, name, isOn);
+                    if (switchJson.getString("dimmer").equals("no")) {
+                        HWSwitch theSwitch = new HWSwitch(connection, id, name, isFavorite, isOn);
                         switches.put(id, theSwitch);
                     } else {
-                        int dimlevel = switchJSON.getInt("dimlevel");
-                        HWDimmer dimmer = new HWDimmer(connection, id, name, isOn, dimlevel);
+                        int dimlevel = switchJson.getInt("dimlevel");
+                        HWDimmer dimmer = new HWDimmer(connection, id, name, isFavorite, isOn, dimlevel);
                         switches.put(id, dimmer);
                     }
 
@@ -74,7 +81,7 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
         JSONObject response = connection.doGet("/get-status");
 
         // "switches": [
-        //   {"id": 0, "status": "off"},
+        //   {"id": 0, "status": "on" },
         //   {"id": 1, "status": "off"}
         // ]
 
@@ -86,7 +93,7 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
                 JSONObject switchJson = jsonSwitches.getJSONObject(i);
 
                 int id = switchJson.getInt("id");
-                boolean isOn = switchJson.getString("status").equals("on");
+                boolean isOn = BooleanUtils.toBoolean(switchJson.getString("status"));
 
                 HWSwitch curSwitch = switches.get(id);
                 if (curSwitch == null) {

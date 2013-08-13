@@ -18,6 +18,7 @@ public abstract class AbstractHwEntity {
 
     private int id;
     private String name;
+    private boolean favorite;
     protected long lastUpdate;
 
     /**
@@ -25,11 +26,13 @@ public abstract class AbstractHwEntity {
      * @param connection Connection to use.
      * @param id Entity ID.
      * @param name Entity name.
+     * @param favorite Favorite flag.
      */
-    protected AbstractHwEntity(HWConnection connection, int id, String name) {
+    protected AbstractHwEntity(HWConnection connection, int id, String name, boolean favorite) {
         this.connection = connection;
         this.id = id;
         this.name = name;
+        this.favorite = favorite;
         this.lastUpdate = System.currentTimeMillis();
     }
 
