@@ -36,8 +36,19 @@ public abstract class AbstractManager<T extends AbstractHwEntity> {
 
     /**
      * @return The interval (in milliseconds) between reloading the current entity statuses.
+     * Return -1 if status updates are not required or supported.
      */
     protected abstract int getStatusUpdateInterval();
+
+    /**
+     * Force a refresh of all data managed by this manager. This does not only update the
+     * status of the entities (such as sensor state, which is done automatically), but also
+     * reloads the entity list.
+     * @throws HWException On any IO or JSON error.
+     */
+    public void refresh() throws HWException {
+        init(true);
+    }
 
     /**
      * Returns the list with all the switches known in the HomeWizard system.
@@ -57,7 +68,7 @@ public abstract class AbstractManager<T extends AbstractHwEntity> {
         init(false);
 
         long now = System.currentTimeMillis();
-        if (lastStatusUpdate == null || (now - lastStatusUpdate >= getStatusUpdateInterval())) {
+        if (getStatusUpdateInterval() > -1 && (lastStatusUpdate == null || (now - lastStatusUpdate >= getStatusUpdateInterval()))) {
             updateStatus();
             lastStatusUpdate = now;
         }

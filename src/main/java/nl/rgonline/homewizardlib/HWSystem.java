@@ -2,8 +2,10 @@ package nl.rgonline.homewizardlib;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import nl.rgonline.homewizardlib.cameras.CameraManager;
 import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.scenes.SceneManager;
 import nl.rgonline.homewizardlib.sensors.SensorManager;
 import nl.rgonline.homewizardlib.switches.SwitchManager;
 import nl.rgonline.homewizardlib.thermo.ThermoManager;
@@ -13,7 +15,7 @@ import org.json.JSONObject;
 
 /**
  * HWSystem is a, reversed engineered, interface to the HomeWizard system (http://www.homewizard.nl).
- * @version 0.2, tested with HomeWizard version 2.352
+ * @version 0.2, tested with HomeWizard version 2.41
  * @author Ruud Greven
  * @author pdegeus
  */
@@ -31,6 +33,12 @@ public final class HWSystem {
 
     @Getter
     private ThermoManager thermoManager;
+
+    @Getter
+    private CameraManager cameraManager;
+
+    @Getter
+    private SceneManager sceneManager;
 
     @Getter
     private double hwVersion;
@@ -55,6 +63,8 @@ public final class HWSystem {
         switchManager = new SwitchManager(connection);
         sensorManager = new SensorManager(connection);
         thermoManager = new ThermoManager(connection);
+        cameraManager = new CameraManager(connection);
+        sceneManager = new SceneManager(connection);
 
         readStatus();
         log.info("HWSystem initialized, HW version: " + hwVersion);
@@ -66,8 +76,6 @@ public final class HWSystem {
      */
     private void readStatus() throws HWException {
         JSONObject status = connection.doGetResp(false, "/get-status");
-        log.error("Retrieve status: {}", status);
-
         try {
             hwVersion = status.getDouble("version");
         } catch (JSONException e) {

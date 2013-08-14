@@ -43,7 +43,21 @@ public final class JsonUtil {
         return result;
     }
 
-    private JsonUtil() {
+    /**
+     * Read an optional String JSON value.
+     * @param json JSON object to read from.
+     * @param field Field to read from.
+     * @param defaultValue Value to return when field value is missing.
+     * @return Field value, or {@code defaultValue}.
+     */
+    public static String readString(JSONObject json, String field, String defaultValue) {
+        try {
+            return json.getString(field);
+        } catch (JSONException e) {
+            return defaultValue;
+        }
     }
 
+    private JsonUtil() {
+    }
 }

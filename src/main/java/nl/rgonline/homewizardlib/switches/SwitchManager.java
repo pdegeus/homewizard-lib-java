@@ -37,15 +37,15 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
     @Override
     protected void init(boolean force) throws HWException {
         if (!initialized || force) {
-            JSONObject response = connection.doGet("/get-sensors");
+            JSONObject response = connection.doGetResp(false, "/swlist");
 
-            // "switches": [
+            // "response": [
             //   { "id": 0, "status": "on",  "name": "Woonkamer 1", "dimmer": "no", "favorite": "yes", "type": "switch" },
             //   { "id": 1, "status": "off", "name": "Woonkamer 2", "dimmer": "no", "favorite": "no",  "type": "switch" }
             // ]
 
             try {
-                JSONArray jsonSwitches = response.getJSONArray("switches");
+                JSONArray jsonSwitches = response.getJSONArray("response");
                 int numSwitches = jsonSwitches.length();
 
                 switches = new HashMap<>();

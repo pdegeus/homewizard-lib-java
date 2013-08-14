@@ -38,9 +38,9 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
     @Override
     protected void init(boolean force) throws HWException {
         if (!initialized || force) {
-            JSONObject response = connection.doGet("/get-sensors");
+            JSONObject response = connection.doGetResp(false, "/telist");
 
-            // "thermometers": [
+            // "response": [
             //   { "id": 0, "hu": null, "name": "Binnen", "te": null, "favorite": "no", "channel": 2 },
             //   { "id": 1, "hu": 72,   "name": "Buiten", "te": 15.5, "favorite": "no", "channel": 1,
             //     "te+t": "12:53", "te+": 21.4, "te-": 13, "te-t": "06:39",
@@ -49,7 +49,7 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
             // ]
 
             try {
-                JSONArray jsonThermos = response.getJSONArray("thermometers");
+                JSONArray jsonThermos = response.getJSONArray("response");
                 int numThermos = jsonThermos.length();
 
                 thermos = new HashMap<>();
@@ -62,10 +62,9 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
                     boolean isFavorite = BooleanUtils.toBoolean(thermoJson.getString("favorite"));
                     int channel = thermoJson.getInt("channel");
 
-                    Integer humidity = JsonUtil.readInteger(thermoJson, "hu");
-                    Double temperature = JsonUtil.readDouble(thermoJson, "te");
+                    HWThermometer thermo = new HWThermometer(connection, id, name, isFavorite, channel);
+                    setData(thermo, thermoJson);
 
-                    HWThermometer thermo = new HWThermometer(connection, id, name, isFavorite, channel, humidity, temperature);
                     thermos.put(id, thermo);
                 }
             } catch (JSONException e) {
@@ -78,36 +77,50 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
 
     @Override
     protected void updateStatus() throws HWException {
-        JSONObject response = connection.doGet("/get-status");
+        JSONObject response = connection.doGetResp(false, "/telist");
 
-        // "thermometers": [
-        //   { "id": 0, "te": null, "hu": null },
-        //   { "id": 1, "te": 15.5, "hu": 72 }
+        // "response": [
+        //   { "id": 0, "hu": null, "name": "Binnen", "te": null, "favorite": "no", "channel": 2 },
+        //   { "id": 1, "hu": 72,   "name": "Buiten", "te": 15.5, "favorite": "no", "channel": 1,
+        //     "te+t": "12:53", "te+": 21.4, "te-": 13, "te-t": "06:39",
+        //     "hu+t": "07:24", "hu+": 78,   "hu-": 60, "hu-t": "13:11"
+        //   }
         // ]
 
         try {
-            JSONArray jsonThermos = response.getJSONArray("thermometers");
+            JSONArray jsonThermos = response.getJSONArray("response");
 
             int numThermos = jsonThermos.length();
             for (int i = 0; i < numThermos; i++) {
                 JSONObject thermoJson = jsonThermos.getJSONObject(i);
 
                 int id = thermoJson.getInt("id");
-                Integer humidity = JsonUtil.readInteger(thermoJson, "hu");
-                Double temperature = JsonUtil.readDouble(thermoJson, "te");
-
                 HWThermometer curThermo = thermos.get(id);
+
                 if (curThermo == null) {
                     log.warn("Unknown thermometer ID: " + id);
                 } else {
-                    curThermo.setHumidity(humidity);
-                    curThermo.setTemperature(temperature);
+                    setData(curThermo, thermoJson);
                     curThermo.updated();
                 }
             }
         } catch (JSONException e) {
             throw new HWException("Error reloading thermometer data", e);
         }
+    }
+
+    private void setData(HWThermometer thermo, JSONObject thermoJson) throws JSONException {
+        thermo.setHumidity(JsonUtil.readInteger(thermoJson, "hu"));
+        thermo.setMinHumidity(JsonUtil.readInteger(thermoJson, "hu-"));
+        thermo.setMaxHumidity(JsonUtil.readInteger(thermoJson, "hu+"));
+        thermo.setMinHumidityTime(JsonUtil.readString(thermoJson, "hu-t", null));
+        thermo.setMaxHumidityTime(JsonUtil.readString(thermoJson, "hu+t", null));
+
+        thermo.setTemperature(JsonUtil.readDouble(thermoJson, "te"));
+        thermo.setMinTemp(JsonUtil.readDouble(thermoJson, "te-"));
+        thermo.setMaxTemp(JsonUtil.readDouble(thermoJson, "te+"));
+        thermo.setMinTempTime(JsonUtil.readString(thermoJson, "te-t", null));
+        thermo.setMaxTempTime(JsonUtil.readString(thermoJson, "te+t", null));
     }
 
     @Override
@@ -119,4 +132,5 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
     protected int getStatusUpdateInterval() {
         return HWConfig.THERMO_UPDATE_INTERVAL.getValue();
     }
+
 }
