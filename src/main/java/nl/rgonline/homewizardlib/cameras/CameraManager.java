@@ -9,7 +9,6 @@ import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.JsonUtil;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +34,7 @@ public class CameraManager extends AbstractManager<HWCamera> {
     }
 
     @Override
-    protected void init(boolean force) throws HWException {
+    public void init(boolean force) throws HWException {
         if (!initialized || force) {
             JSONObject response = connection.doGet("/get-sensors");
 

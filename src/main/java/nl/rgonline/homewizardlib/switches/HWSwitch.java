@@ -34,6 +34,13 @@ public class HWSwitch extends AbstractHwEntity {
 	}
 
     /**
+     * @return True if this switch is a dimmer.
+     */
+    public boolean isDimmer() {
+        return false;
+    }
+
+    /**
      * @return True if this switch is turned off.
      * @throws HWException On IO failures.
      */

@@ -47,6 +47,14 @@ public class HomeWizIntegrationTest {
     @Test
     public void testGetScenes() throws HWException {
         log.info("Scenes: {}", hw.getSceneManager().getAll());
+        log.info("Scene codes: {}", hw.getSceneManager().get(1).getCodes());
+        log.info("Scene switches: {}", hw.getSceneManager().get(1).getSwitches());
+        log.info("Scene timers: {}", hw.getSceneManager().get(1).getTimers());
+    }
+
+    @Test
+    public void testGetTimers() throws HWException {
+        log.info("Timers: {}", hw.getTimerManager().getAll());
     }
 
     @Test

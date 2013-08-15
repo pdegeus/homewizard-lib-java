@@ -30,6 +30,11 @@ public class HWDimmer extends HWSwitch {
 		this.dimLevel = dimLevel;
 	}
 
+    @Override
+    public boolean isDimmer() {
+        return true;
+    }
+
     /**
      * Sets dim-level of this dimmer.
      * @param dimLevel New dim-level.

@@ -35,8 +35,8 @@ public class SensorManager extends AbstractManager<HWSensor> {
     }
 
     @Override
-    protected void init(boolean force) throws HWException {
-        if (!initialized || force) {
+    public void init(boolean forceReload) throws HWException {
+        if (!initialized || forceReload) {
             JSONObject response = connection.doGet("/get-sensors");
 
             // "kakusensors": [

@@ -34,8 +34,8 @@ public class SceneManager extends AbstractManager<HWScene> {
     }
 
     @Override
-    protected void init(boolean force) throws HWException {
-        if (!initialized || force) {
+    public void init(boolean forceReload) throws HWException {
+        if (!initialized || forceReload) {
             JSONObject response = connection.doGetResp(false, "/gplist");
 
             // "response": [

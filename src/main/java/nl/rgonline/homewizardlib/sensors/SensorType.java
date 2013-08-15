@@ -1,5 +1,7 @@
 package nl.rgonline.homewizardlib.sensors;
 
+import lombok.Getter;
+
 /**
  * HomeWizard sensor types enum.
  * @author pdegeus
@@ -15,28 +17,29 @@ public enum SensorType {
     /** Motion detector */
     MOTION ("motion");
 
-    private final String typeString;
+    @Getter
+    private final String apiString;
 
     /**
      * Constructor.
-     * @param typeString API type string.
+     * @param apiString API type string.
      */
-    SensorType(String typeString) {
-        this.typeString = typeString;
+    SensorType(String apiString) {
+        this.apiString = apiString;
     }
 
     /**
      * Get the SensorType for the given API string.
-     * @param typeStr API type string.
+     * @param apiString API type string.
      * @return SensorType for the given string.
      */
-    public static SensorType forString(String typeStr) {
-        for (SensorType type : SensorType.values()) {
-            if (type.typeString.equals(typeStr)) {
+    public static SensorType forString(String apiString) {
+        for (SensorType type : values()) {
+            if (type.apiString.equals(apiString)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Unknown type string: " + typeStr);
+        throw new IllegalArgumentException("Unknown API string: " + apiString);
     }
 
 }

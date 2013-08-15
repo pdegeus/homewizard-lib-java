@@ -9,6 +9,7 @@ import nl.rgonline.homewizardlib.scenes.SceneManager;
 import nl.rgonline.homewizardlib.sensors.SensorManager;
 import nl.rgonline.homewizardlib.switches.SwitchManager;
 import nl.rgonline.homewizardlib.thermo.ThermoManager;
+import nl.rgonline.homewizardlib.timers.TimerManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +42,9 @@ public final class HWSystem {
     private SceneManager sceneManager;
 
     @Getter
+    private TimerManager timerManager;
+
+    @Getter
     private double hwVersion;
 
     /**
@@ -65,6 +69,7 @@ public final class HWSystem {
         thermoManager = new ThermoManager(connection);
         cameraManager = new CameraManager(connection);
         sceneManager = new SceneManager(connection);
+        timerManager = new TimerManager(connection);
 
         readStatus();
         log.info("HWSystem initialized, HW version: " + hwVersion);

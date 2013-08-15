@@ -36,8 +36,8 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
     }
 
     @Override
-    protected void init(boolean force) throws HWException {
-        if (!initialized || force) {
+    public void init(boolean forceReload) throws HWException {
+        if (!initialized || forceReload) {
             JSONObject response = connection.doGetResp(false, "/telist");
 
             // "response": [
