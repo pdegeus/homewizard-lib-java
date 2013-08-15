@@ -1,20 +1,38 @@
 homewizard-lib-java
 ===================
 
-An reversed engineered open-source library for the Homewizard ( http://www.homewizard.nl ).
-Uses Maven for dependency management.
+A reversed engineered open-source library for the [HomeWizard](http://www.homewizard.nl) home automation system.
+Uses the HomeWizard's JSON/REST API to read switches, sensors, weather data, etc.
 
-Use the code from the package nl.rgonline.homewizardlibgui to see how you should use this library. The most import calls are:
+Usage
+-----
 
-**Init HWSystem**
+Initialize the main class, <code>HWSystem</code>:
 
-	HWSystem hwsystem = new HWSystem(ipadres, password);
-	hwsystem.init();
-		
-**Get a list of switches**
+    HWSystem hw = new HWSystem();
+    // or
+    HWSystem hw = new HWSystem("192.168.1.10", 80, "mypassword");
+    
+Use one of the managers to fetch information about your HomeWizard:
 
-	List<HWSwitch> switches = hwsystem.getSwitches();
+    hw.getSwitchManager().getAll(); // List of switches
+    hw.getSwitchManager().get(1).isOn(); // Turn on switch #1
+    hw.getSceneManager().get(2).getTimers(); // List of timers for scene #2
 
-**Use switches**
+**Configuration**
 
-Now you can find a switch with a certain name or number and turn it on or off, or ask for the status.
+Configuration of the HomeWizard connection can be passed to the constructor or read from a configuration file. Other configuration properties must be provided using a config file.
+The default configuration file is 'homewizard.cfg'; the library looks for this file in the current working directory and the directory above it. If you want to use another location, set the runtime system property 'hwconfig' to point to the desired path.
+
+Current status
+--------------
+
+Currently, this library supports reading data about:
+* Switches
+* Sensors
+* Scenes (including codes, switches and timers)
+* Cameras
+* Thermometers (current value and graph data)
+* Timers
+ 
+Switches can be toggles or dimmed. HomeWizard management, like adding switches, is not possible at this moment.
