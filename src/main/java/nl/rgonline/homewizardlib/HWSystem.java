@@ -21,7 +21,7 @@ import org.json.JSONObject;
  * @author pdegeus
  */
 @Slf4j
-public final class HWSystem {
+public class HWSystem {
 
     @Getter
 	private HWConnection connection;

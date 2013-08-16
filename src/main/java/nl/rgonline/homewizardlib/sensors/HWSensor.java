@@ -32,7 +32,7 @@ public class HWSensor extends AbstractHwEntity {
      * @param isFavorite True if switch is marked as favorite.
      * @param isOn True if sensor is currently 'on'.
      */
-    protected HWSensor(HWConnection connection, int id, String name, SensorType type, String lastEventTime, boolean isFavorite, boolean isOn) {
+    public HWSensor(HWConnection connection, int id, String name, SensorType type, String lastEventTime, boolean isFavorite, boolean isOn) {
         super(connection, id, name, isFavorite);
         this.type = type;
         this.lastEventTime = lastEventTime;
