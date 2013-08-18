@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 import org.apache.http.client.HttpClient;
@@ -13,6 +14,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,7 +40,11 @@ public final class HWConnection {
     HWConnection(String host, int port, String password) {
 		this.connectionString = String.format("http://%s:%d/%s", host, port, password);
         this.httpClient = new DefaultHttpClient();
-	}
+
+        HttpParams params = httpClient.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, HWConfig.CONNECT_TIMEOUT.getValue());
+        HttpConnectionParams.setSoTimeout(params, HWConfig.READ_TIMEOUT.getValue());
+    }
 
     /**
      * Perform a GET request to the HomeWizard and return the result.

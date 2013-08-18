@@ -149,6 +149,32 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
         return codes;
     }
 
+    /**
+     * Turn on this scene.
+     * @throws HWException On IO failures.
+     */
+    public void turnOn() throws HWException {
+        toggle(true);
+    }
+
+    /**
+     * Turn off this scene.
+     * @throws HWException On IO failures.
+     */
+    public void turnOff() throws HWException {
+        toggle(false);
+    }
+
+    /**
+     * Toggles this scene. Equivalent to http://<ip>/<password>/gp/<id>/<on|off>
+     * @param turnOn True to toggle on, false for off.
+     * @throws HWException On IO failures.
+     */
+    private void toggle(boolean turnOn) throws HWException {
+        String onOrOff = (turnOn) ? "on" : "off";
+        getConnection().doGet("/gp/", getId(), "/", onOrOff);
+    }
+
     @Override
     public String toString() {
         return String.format("[HwScene#%d '%s']", getId(), getName());
