@@ -2,6 +2,7 @@ package nl.rgonline.homewizardlib.timers;
 
 import java.util.Set;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
@@ -12,6 +13,7 @@ import nl.rgonline.homewizardlib.HWConnection;
  * Represents a timer in the HomeWizard system.
  * @author pdegeus
  */
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class HWTimer extends AbstractHwEntity {
 

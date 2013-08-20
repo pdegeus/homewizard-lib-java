@@ -10,7 +10,7 @@ import lombok.ToString;
  * @author pdegeus
  */
 @Data
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of={"id", "name"})
 @ToString(exclude="connection")
 public abstract class AbstractHwEntity {
 

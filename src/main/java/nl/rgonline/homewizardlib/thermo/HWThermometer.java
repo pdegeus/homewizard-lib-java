@@ -26,7 +26,7 @@ import org.json.JSONObject;
  * @author pdegeus
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(exclude={"temperature", "humidity", "humidityCache", "temperatureCache"}, callSuper = true)
 @ToString(callSuper = true)
 public class HWThermometer extends AbstractHwEntity {
 
