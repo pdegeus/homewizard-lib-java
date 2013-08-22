@@ -32,16 +32,16 @@ public class HWConfig {
     public static final HWConfigItem<Integer> SWITCH_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.switch", Integer.class, 2000);
 
     /** Config item for sensors status update interval */
-    public static final HWConfigItem<Integer> SENSOR_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.sensor", Integer.class, 4000);
+    public static final HWConfigItem<Integer> SENSOR_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.sensor", Integer.class, 3000);
 
     /** Config item for thermometer data update interval */
-    public static final HWConfigItem<Integer> THERMO_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.thermo", Integer.class, 20000);
+    public static final HWConfigItem<Integer> THERMO_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.thermo", Integer.class, 22000);
 
     /** Config item for connection timeout in milliseconds */
-    public static final HWConfigItem<Integer> CONNECT_TIMEOUT = new HWConfigItem<>("timeout.connet", Integer.class, 3000);
+    public static final HWConfigItem<Integer> CONNECT_TIMEOUT = new HWConfigItem<>("timeout.connet", Integer.class, 5000);
 
     /** Config item for read timeout in milliseconds */
-    public static final HWConfigItem<Integer> READ_TIMEOUT = new HWConfigItem<>("timeout.read", Integer.class, 3000);
+    public static final HWConfigItem<Integer> READ_TIMEOUT = new HWConfigItem<>("timeout.read", Integer.class, 5000);
 
 
     /* Config loader */
