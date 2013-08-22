@@ -31,6 +31,7 @@ public class SensorManager extends AbstractManager<HWSensor> {
      * @param connection Connection to use.
      */
     public SensorManager(HWConnection connection) {
+        super(HWConfig.SENSOR_UPDATE_INTERVAL.getValue());
         this.connection = connection;
     }
 
@@ -113,11 +114,6 @@ public class SensorManager extends AbstractManager<HWSensor> {
     @Override
     protected Map<Integer, HWSensor> getEntityMap() {
         return sensors;
-    }
-
-    @Override
-    protected int getStatusUpdateInterval() {
-        return HWConfig.SENSOR_UPDATE_INTERVAL.getValue();
     }
 
 }

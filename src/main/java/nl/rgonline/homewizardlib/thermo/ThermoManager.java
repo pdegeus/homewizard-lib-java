@@ -32,6 +32,7 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
      * @param connection Connection to use.
      */
     public ThermoManager(HWConnection connection) {
+        super(HWConfig.THERMO_UPDATE_INTERVAL.getValue());
         this.connection = connection;
     }
 
@@ -126,11 +127,6 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
     @Override
     public Map<Integer, HWThermometer> getEntityMap() {
         return thermos;
-    }
-
-    @Override
-    protected int getStatusUpdateInterval() {
-        return HWConfig.THERMO_UPDATE_INTERVAL.getValue();
     }
 
 }

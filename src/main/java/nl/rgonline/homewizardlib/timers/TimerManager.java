@@ -33,6 +33,7 @@ public class TimerManager extends AbstractManager<HWTimer> {
      * @param connection Connection to use.
      */
     public TimerManager(HWConnection connection) {
+        super(-1);
         this.connection = connection;
     }
 
@@ -93,8 +94,4 @@ public class TimerManager extends AbstractManager<HWTimer> {
         return timers;
     }
 
-    @Override
-    protected int getStatusUpdateInterval() {
-        return -1;
-    }
 }

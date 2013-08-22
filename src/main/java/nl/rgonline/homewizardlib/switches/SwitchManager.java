@@ -31,6 +31,7 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
      * @param connection Connection to use.
      */
     public SwitchManager(HWConnection connection) {
+        super(HWConfig.SWITCH_UPDATE_INTERVAL.getValue());
         this.connection = connection;
     }
 
@@ -113,8 +114,4 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
         return switches;
     }
 
-    @Override
-    protected int getStatusUpdateInterval() {
-        return HWConfig.SWITCH_UPDATE_INTERVAL.getValue();
-    }
 }

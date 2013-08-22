@@ -30,6 +30,7 @@ public class CameraManager extends AbstractManager<HWCamera> {
      * @param connection Connection to use.
      */
     public CameraManager(HWConnection connection) {
+        super(-1);
         this.connection = connection;
     }
 
@@ -77,11 +78,6 @@ public class CameraManager extends AbstractManager<HWCamera> {
     @Override
     protected Map<Integer, HWCamera> getEntityMap() {
         return cameras;
-    }
-
-    @Override
-    protected int getStatusUpdateInterval() {
-        return -1;
     }
 
 }

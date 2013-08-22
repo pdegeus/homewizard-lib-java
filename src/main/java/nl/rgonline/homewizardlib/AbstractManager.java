@@ -13,7 +13,17 @@ import nl.rgonline.homewizardlib.exceptions.HWException;
  */
 public abstract class AbstractManager<T extends AbstractHwEntity> implements Refreshable {
 
+    private final long updateInterval;
     private Long lastStatusUpdate = null;
+
+    /**
+     * Constructor.
+     * @param updateInterval The interval (in milliseconds) between reloading the current entity statuses.
+     * Return -1 if status updates are not required or supported.
+     */
+    public AbstractManager(int updateInterval) {
+        this.updateInterval = updateInterval;
+    }
 
     /**
      * Updates the status of all loaded entities.
@@ -27,12 +37,6 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
     protected abstract Map<Integer, T> getEntityMap();
 
     /**
-     * @return The interval (in milliseconds) between reloading the current entity statuses.
-     * Return -1 if status updates are not required or supported.
-     */
-    protected abstract int getStatusUpdateInterval();
-
-    /**
      * Force a refresh of all data managed by this manager. This does not only update the
      * status of the entities (such as sensor state, which is done automatically), but also
      * reloads the entity list.
@@ -40,6 +44,26 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
      */
     public void refresh() throws HWException {
         init(true);
+    }
+
+    /**
+     * Updates the status of this manager if the current state has expired, as indicated by the update interval.
+     * Updating the status does not reload all data (as {@link #refresh()} does), but only reloads the state of currently
+     * known HW entities, such as sensors. Hence, entities added to the HW in the meantime will not be seen.
+     * <p/>
+     * Access to this method is synchronized to ensure calls from different threads will not result in duplicate updates.
+     * @throws HWException On any IO or JSON error.
+     */
+    public synchronized void updateStatusIfExpired() throws HWException {
+        init(false);
+
+        if (updateInterval > -1) {
+            long now = System.currentTimeMillis();
+            if (lastStatusUpdate == null || (now - lastStatusUpdate >= updateInterval)) {
+                updateStatus();
+                lastStatusUpdate = now;
+            }
+        }
     }
 
     /**
@@ -57,14 +81,7 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
      * @throws HWException On HomeWizard communication errors.
      */
     public Map<Integer, T> getAllById() throws HWException {
-        init(false);
-
-        long now = System.currentTimeMillis();
-        if (getStatusUpdateInterval() > -1 && (lastStatusUpdate == null || (now - lastStatusUpdate >= getStatusUpdateInterval()))) {
-            updateStatus();
-            lastStatusUpdate = now;
-        }
-
+        updateStatusIfExpired();
         return getEntityMap();
     }
 

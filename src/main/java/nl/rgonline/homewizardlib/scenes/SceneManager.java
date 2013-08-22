@@ -30,6 +30,7 @@ public class SceneManager extends AbstractManager<HWScene> {
      * @param connection Connection to use.
      */
     public SceneManager(HWConnection connection) {
+        super(-1);
         this.connection = connection;
     }
 
@@ -75,11 +76,6 @@ public class SceneManager extends AbstractManager<HWScene> {
     @Override
     protected Map<Integer, HWScene> getEntityMap() {
         return scenes;
-    }
-
-    @Override
-    protected int getStatusUpdateInterval() {
-        return -1;
     }
 
 }
