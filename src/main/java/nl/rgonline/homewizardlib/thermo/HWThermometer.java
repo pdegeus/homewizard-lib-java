@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,18 +39,29 @@ public class HWThermometer extends AbstractHwEntity {
     @Getter @Setter
     private int channel;
 
-    @Getter private Integer humidity;
-    @Getter private Double temperature;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private Integer humidity;
+    
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private Double temperature;
 
-    @Getter private Double minTemp;
-    @Getter private String minTempTime;
-    @Getter private Double maxTemp;
-    @Getter private String maxTempTime;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private Double minTemp;
+    @Getter @Setter(AccessLevel.PROTECTED) 
+    private String minTempTime;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private Double maxTemp;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private String maxTempTime;
 
-    @Getter private Integer minHumidity;
-    @Getter private String minHumidityTime;
-    @Getter private Integer maxHumidity;
-    @Getter private String maxHumidityTime;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private Integer minHumidity;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private String minHumidityTime;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private Integer maxHumidity;
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private String maxHumidityTime;
 
     private Map<TimeSpan, TimeValueCache<Integer>> humidityCache = new HashMap<>();
     private Map<TimeSpan, TimeValueCache<Double>> temperatureCache = new HashMap<>();
