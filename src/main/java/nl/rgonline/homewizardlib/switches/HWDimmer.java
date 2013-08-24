@@ -36,11 +36,11 @@ public class HWDimmer extends HWSwitch {
     }
 
     /**
-     * Sets dim-level of this dimmer.
+     * Sets dim-level of this dimmer. Updates HomeWizard immediately (no need to call {@link #saveChanges()}.
      * @param dimLevel New dim-level.
      * @throws HWException On IO failures.
      */
-    void setDimLevel(int dimLevel) throws HWException {
+    public void setDimLevel(int dimLevel) throws HWException {
         this.dimLevel = dimLevel;
         getConnection().doGet("/sw/dim/", getId(), "/", dimLevel);
     }

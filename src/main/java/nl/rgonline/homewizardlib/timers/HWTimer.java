@@ -4,10 +4,14 @@ import java.util.Set;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWAction;
 import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.exceptions.HWException;
+
+import org.apache.commons.lang.BooleanUtils;
 
 /**
  * Represents a timer in the HomeWizard system.
@@ -17,10 +21,10 @@ import nl.rgonline.homewizardlib.HWConnection;
 @ToString(callSuper = true)
 public class HWTimer extends AbstractHwEntity {
 
-    @Getter
+    @Getter @Setter
     private TimerTrigger trigger;
 
-    @Getter
+    @Getter @Setter
     private HWAction action;
 
     @Getter
@@ -29,13 +33,13 @@ public class HWTimer extends AbstractHwEntity {
     @Getter
     private int subjectId;
 
-    @Getter
+    @Getter @Setter
     private boolean active;
 
-    @Getter
+    @Getter @Setter
     private String timeOrOffset;
 
-    @Getter
+    @Getter @Setter
     private Set<Day> days;
 
     /**
@@ -70,6 +74,18 @@ public class HWTimer extends AbstractHwEntity {
      */
     public boolean isRepeatingTimer() {
         return !days.isEmpty();
+    }
+
+    @Override
+    protected void saveInternal() throws HWException {
+        String dayStr = (days == null || days.isEmpty()) ? "7" : Day.toApiFormat(days);
+        String enabled = BooleanUtils.toStringYesNo(isActive());
+
+        // /et/<id>/<action on|off>/<trigger type>/<offset|time>/<days>/<enabled yes|no>
+        getConnection().doGet(
+            "/et/", getId(), "/", getAction().getApiString(), "/", getTrigger().getApiString(), "/",
+            getTimeOrOffset(), "/", dayStr, "/", enabled
+        );
     }
 
 }

@@ -9,11 +9,11 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.util.UrlUtil;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
@@ -30,14 +30,9 @@ public class HWSensor extends AbstractHwEntity {
     // Date parser for timestamp: 2013-08-13 21:25:59
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @Getter @Setter
-    private SensorType type;
-
-    @Getter
-    private String lastEventTime;
-
-    @Getter
-    private boolean on;
+    @Getter private SensorType type;
+    @Getter private String lastEventTime;
+    @Getter private boolean on;
 
     private TreeMap<Date, Boolean> log;
     private boolean logNeedsUpdate = false;
@@ -150,6 +145,15 @@ public class HWSensor extends AbstractHwEntity {
 
             logNeedsUpdate = false;
         }
+    }
+
+    @Override
+    protected void saveInternal() throws HWException {
+        String fav = BooleanUtils.toStringYesNo(isFavorite());
+
+        // /kks/edit/4/<name>/<isFav>
+        getConnection().doGet("/kks/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav);
+
     }
 
 }

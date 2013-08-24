@@ -13,6 +13,7 @@ import nl.rgonline.homewizardlib.timers.Day;
 import nl.rgonline.homewizardlib.timers.HWTimer;
 import nl.rgonline.homewizardlib.timers.TimerSubject;
 import nl.rgonline.homewizardlib.timers.TimerTrigger;
+import nl.rgonline.homewizardlib.util.UrlUtil;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
@@ -114,6 +115,14 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
         Set<Day> days = Day.readArray(timerJson.getJSONArray("days"));
 
         return new HWTimer(getConnection(), id, trigger, action, TimerSubject.SCENE, getId(), active, timeOrOffset, days);
+    }
+
+    @Override
+    protected void saveInternal() throws HWException {
+        String fav = BooleanUtils.toStringYesNo(isFavorite());
+
+        // /gp/edit/<id>/<name>/<isFav>
+        getConnection().doGet("/gp/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav);
     }
 
     /**

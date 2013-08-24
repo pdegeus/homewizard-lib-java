@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.util.UrlUtil;
 
 /**
  * Represents a camera in the HomeWizard system.
@@ -36,6 +38,15 @@ public class HWCamera extends AbstractHwEntity {
         this.password = password;
         this.host = host;
         this.port = port;
+    }
+
+    @Override
+    protected void saveInternal() throws HWException {
+        // /cam/edit/<id>/<name>/<host>/<port>/<user>/<pass>
+        getConnection().doGet(
+            "/cam/edit/", getId(), "/", UrlUtil.encode(getName()), "/", UrlUtil.encode(getHost()), "/",
+            getPort(), "/", UrlUtil.encode(getUsername()), "/", UrlUtil.encode(getPassword())
+        );
     }
 
 }

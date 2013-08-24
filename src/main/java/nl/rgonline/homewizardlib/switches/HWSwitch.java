@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.util.UrlUtil;
+
+import org.apache.commons.lang.BooleanUtils;
 
 /**
  * Represents a switch in the HomeWizard system.
@@ -86,6 +89,15 @@ public class HWSwitch extends AbstractHwEntity {
     private void toggle(boolean turnOn) throws HWException {
         String onOrOff = (turnOn) ? "on" : "off";
         getConnection().doGet("/sw/", getId(), "/", onOrOff);
+    }
+
+    @Override
+    protected void saveInternal() throws HWException {
+        String fav = BooleanUtils.toStringYesNo(isFavorite());
+        String dim = BooleanUtils.toStringYesNo(isDimmer());
+
+        // /sw/edit/<id>/<name>/<isFav>/<isDim>
+        getConnection().doGet("/sw/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav, "/", dim);
     }
 
 }

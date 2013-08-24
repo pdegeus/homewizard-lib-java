@@ -71,4 +71,20 @@ public enum Day {
         return days;
     }
 
+    /**
+     * Generates a comma-separated string from the given set of Days, as used by the HW API.
+     * @param days Set of Days.
+     * @return API string.
+     */
+    public static String toApiFormat(Set<Day> days) {
+        StringBuilder sb = new StringBuilder();
+        for (Day day : days) {
+            if (sb.length() > 0) {
+                sb.append(',');
+            }
+            sb.append(day.getApiNumber());
+        }
+        return sb.toString();
+    }
+
 }

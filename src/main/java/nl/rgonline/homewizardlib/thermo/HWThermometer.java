@@ -9,14 +9,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
 import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.util.UrlUtil;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +28,6 @@ import org.json.JSONObject;
  * Represents a thermometer in the HomeWizard system.
  * @author pdegeus
  */
-@Data
 @EqualsAndHashCode(exclude={"temperature", "humidity", "humidityCache", "temperatureCache"}, callSuper = true)
 @ToString(callSuper = true)
 public class HWThermometer extends AbstractHwEntity {
@@ -33,19 +35,21 @@ public class HWThermometer extends AbstractHwEntity {
     // Date parser for timestamp: 2013-08-13 21:25
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
+    @Getter @Setter
     private int channel;
-    private Integer humidity;
-    private Double temperature;
 
-    private Double minTemp;
-    private String minTempTime;
-    private Double maxTemp;
-    private String maxTempTime;
+    @Getter private Integer humidity;
+    @Getter private Double temperature;
 
-    private Integer minHumidity;
-    private String minHumidityTime;
-    private Integer maxHumidity;
-    private String maxHumidityTime;
+    @Getter private Double minTemp;
+    @Getter private String minTempTime;
+    @Getter private Double maxTemp;
+    @Getter private String maxTempTime;
+
+    @Getter private Integer minHumidity;
+    @Getter private String minHumidityTime;
+    @Getter private Integer maxHumidity;
+    @Getter private String maxHumidityTime;
 
     private Map<TimeSpan, TimeValueCache<Integer>> humidityCache = new HashMap<>();
     private Map<TimeSpan, TimeValueCache<Double>> temperatureCache = new HashMap<>();
@@ -157,6 +161,14 @@ public class HWThermometer extends AbstractHwEntity {
         Long cacheLastUp = cache.getLastUpdate();
         long expire = HWConfig.THERMO_UPDATE_INTERVAL.getValue();
         return (cacheLastUp == null || (System.currentTimeMillis() - cacheLastUp > expire));
+    }
+
+    @Override
+    protected void saveInternal() throws HWException {
+        String fav = BooleanUtils.toStringYesNo(isFavorite());
+
+        // /te/edit/<id>/<name>/<channel>/<isFav>
+        getConnection().doGet("/te/edit/", getId(), "/", UrlUtil.encode(getName()), "/", getChannel(), "/", fav);
     }
 
 }
