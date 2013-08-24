@@ -87,7 +87,7 @@ public class HWThermometer extends AbstractHwEntity {
         return temperatureCache.get(timeSpan).getData();
     }
 
-    private void loadData(TimeSpan timeSpan) throws HWException {
+    private synchronized void loadData(TimeSpan timeSpan) throws HWException {
         if (needsUpdate(timeSpan)) {
             JSONObject response = getConnection().doGetResp(false, "/te/graph/", getId(), "/", timeSpan.getApiString());
 

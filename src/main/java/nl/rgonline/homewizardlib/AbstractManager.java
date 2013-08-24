@@ -67,8 +67,8 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
     }
 
     /**
-     * Returns the list with all the switches known in the HomeWizard system.
-     * @return A (copy of the) list with switches.
+     * Returns the list with all the entities known by this manager.
+     * @return A (copy of the) list of entities of type {@code T}.
      * @throws HWException On HomeWizard communication errors.
      */
     public List<T> getAll() throws HWException {
@@ -76,8 +76,8 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
     }
 
     /**
-     * Returns the ID/switch mapping of all switches known in the HomeWizard system.
-     * @return A (copy of the) map with switches.
+     * Returns the ID/entity mapping of all entities known by this manager.
+     * @return A (copy of the) map containing all entities of type {@code T}.
      * @throws HWException On HomeWizard communication errors.
      */
     public Map<Integer, T> getAllById() throws HWException {
@@ -86,9 +86,9 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
     }
 
     /**
-     * Find the switch with the given id.
+     * Find the entity with the given ID.
      * @param id The ID to search for.
-     * @return The right HWSwitch if the switch is found, or null.
+     * @return Entity instance of type {@code T} if it's found, or null.
      * @throws HWException On HomeWizard communication errors.
      */
     public T get(int id) throws HWException {
@@ -96,9 +96,9 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
     }
 
     /**
-     * Find the switch with the given name.
+     * Find the entity with the given name.
      * @param name The name to search for.
-     * @return The right HWSwitch if the switch is found, or null.
+     * @return Entity instance of type {@code T} if it's found, or null.
      * @throws HWException On HomeWizard communication errors.
      */
     public T getByName(String name) throws HWException {
