@@ -38,11 +38,16 @@ public class HWConfig {
     public static final HWConfigItem<Integer> THERMO_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.thermo", Integer.class, 22000);
 
     /** Config item for connection timeout in milliseconds */
-    public static final HWConfigItem<Integer> CONNECT_TIMEOUT = new HWConfigItem<>("timeout.connet", Integer.class, 5000);
+    public static final HWConfigItem<Integer> CONNECT_TIMEOUT = new HWConfigItem<>("timeout.connect", Integer.class, 5000);
 
     /** Config item for read timeout in milliseconds */
     public static final HWConfigItem<Integer> READ_TIMEOUT = new HWConfigItem<>("timeout.read", Integer.class, 5000);
 
+    /** Config item for maximum number of total concurrent connections */
+    public static final HWConfigItem<Integer> MAX_TOTAL_CONNECTIONS = new HWConfigItem<>("connections.maxconcurrent.total", Integer.class, 200);
+
+    /** Config item for maximum number of concurrent connections per route (URL) */
+    public static final HWConfigItem<Integer> MAX_ROUTE_CONNECTIONS = new HWConfigItem<>("connections.maxconcurrent.route", Integer.class, 20);
 
     /* Config loader */
 
@@ -51,7 +56,7 @@ public class HWConfig {
 
     // Interval in seconds at which config is reloaded by default
     private static final int RELOAD_INTERVAL = 30;
-    
+
     private static long lastUpdate = -1;
     
     private static Properties properties = null;

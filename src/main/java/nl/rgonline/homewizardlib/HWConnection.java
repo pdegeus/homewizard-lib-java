@@ -12,8 +12,13 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
@@ -28,6 +33,18 @@ import org.json.JSONObject;
 @ToString
 public final class HWConnection {
 
+    private static final PoolingClientConnectionManager CONNECTION_MANAGER;
+
+    static {
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+        schemeRegistry.register(new Scheme("https", 443, SSLSocketFactory.getSocketFactory()));
+
+        CONNECTION_MANAGER = new PoolingClientConnectionManager(schemeRegistry);
+        CONNECTION_MANAGER.setMaxTotal(HWConfig.MAX_TOTAL_CONNECTIONS.getValue());
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(HWConfig.MAX_ROUTE_CONNECTIONS.getValue());
+    }
+
     private HttpClient httpClient;
     private String connectionString;
 
@@ -39,7 +56,7 @@ public final class HWConnection {
      */
     HWConnection(String host, int port, String password) {
 		this.connectionString = String.format("http://%s:%d/%s", host, port, password);
-        this.httpClient = new DefaultHttpClient();
+        this.httpClient = new DefaultHttpClient(CONNECTION_MANAGER);
 
         HttpParams params = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(params, HWConfig.CONNECT_TIMEOUT.getValue());
