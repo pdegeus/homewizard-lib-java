@@ -37,6 +37,14 @@ public class HWConfig {
     /** Config item for thermometer data update interval */
     public static final HWConfigItem<Integer> THERMO_UPDATE_INTERVAL = new HWConfigItem<>("updateinterval.thermo", Integer.class, 22000);
 
+    /** Config item for thermometer graph/history data update interval for timespan day */
+    public static final HWConfigItem<Integer> THERMO_GRAPH_UPDATE_INTERVAL_DAY =
+        new HWConfigItem<>("updateinterval.thermo.graph.day", Integer.class, 600000);
+
+    /** Config item for thermometer graph/history data update interval for timespan other then day */
+    public static final HWConfigItem<Integer> THERMO_GRAPH_UPDATE_INTERVAL_OTHER =
+        new HWConfigItem<>("updateinterval.thermo.graph.other", Integer.class, 3600000);
+
     /** Config item for connection timeout in milliseconds */
     public static final HWConfigItem<Integer> CONNECT_TIMEOUT = new HWConfigItem<>("timeout.connect", Integer.class, 5000);
 

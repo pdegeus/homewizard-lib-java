@@ -170,8 +170,14 @@ public class HWThermometer extends AbstractHwEntity {
             return true;
         }
 
+        long expire;
+        if (timeSpan == TimeSpan.DAY) {
+            expire = HWConfig.THERMO_GRAPH_UPDATE_INTERVAL_DAY.getValue();
+        } else {
+            expire = HWConfig.THERMO_GRAPH_UPDATE_INTERVAL_OTHER.getValue();
+        }
+
         Long cacheLastUp = cache.getLastUpdate();
-        long expire = HWConfig.THERMO_UPDATE_INTERVAL.getValue();
         return (cacheLastUp == null || (System.currentTimeMillis() - cacheLastUp > expire));
     }
 

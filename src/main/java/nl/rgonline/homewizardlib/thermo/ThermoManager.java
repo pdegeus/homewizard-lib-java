@@ -110,7 +110,7 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
         }
     }
 
-    private void setData(HWThermometer thermo, JSONObject thermoJson) throws JSONException {
+    private void setData(HWThermometer thermo, JSONObject thermoJson) {
         thermo.setHumidity(JsonUtil.readInteger(thermoJson, "hu"));
         thermo.setMinHumidity(JsonUtil.readInteger(thermoJson, "hu-"));
         thermo.setMaxHumidity(JsonUtil.readInteger(thermoJson, "hu+"));
