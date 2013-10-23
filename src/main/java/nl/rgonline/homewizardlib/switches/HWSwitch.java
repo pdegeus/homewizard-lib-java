@@ -5,7 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.UrlUtil;
 
@@ -88,7 +89,8 @@ public class HWSwitch extends AbstractHwEntity {
      */
     private void toggle(boolean turnOn) throws HWException {
         String onOrOff = (turnOn) ? "on" : "off";
-        getConnection().doGet("/sw/", getId(), "/", onOrOff);
+        Request request = new Request("/sw/", getId(), "/", onOrOff);
+        getConnection().request(request);
     }
 
     @Override
@@ -97,7 +99,8 @@ public class HWSwitch extends AbstractHwEntity {
         String dim = BooleanUtils.toStringYesNo(isDimmer());
 
         // /sw/edit/<id>/<name>/<isFav>/<isDim>
-        getConnection().doGet("/sw/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav, "/", dim);
+        Request request = new Request("/sw/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav, "/", dim);
+        getConnection().request(request);
     }
 
 }

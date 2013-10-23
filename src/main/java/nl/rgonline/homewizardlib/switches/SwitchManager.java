@@ -5,8 +5,9 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -38,7 +39,8 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
     @Override
     public void init(boolean forceReload) throws HWException {
         if (!initialized || forceReload) {
-            JSONObject response = connection.doGetResp(false, "/swlist");
+            Request request = new Request("/swlist").setReturnResponse(false);
+            JSONObject response = connection.request(request);
 
             // "response": [
             //   { "id": 0, "status": "on",  "name": "Woonkamer 1", "dimmer": "no", "favorite": "yes", "type": "switch" },
@@ -79,7 +81,8 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
 
     @Override
     protected void updateStatus() throws HWException {
-        JSONObject response = connection.doGet("/get-status");
+        Request request = new Request(getUpdateInterval(), "/get-status");
+        JSONObject response = connection.request(request);
 
         // "switches": [
         //   {"id": 0, "status": "on" },

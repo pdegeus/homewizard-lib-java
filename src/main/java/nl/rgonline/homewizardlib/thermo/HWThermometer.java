@@ -15,8 +15,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.UrlUtil;
 
@@ -105,7 +106,8 @@ public class HWThermometer extends AbstractHwEntity {
 
     private synchronized void loadData(TimeSpan timeSpan) throws HWException {
         if (needsUpdate(timeSpan)) {
-            JSONObject response = getConnection().doGetResp(false, "/te/graph/", getId(), "/", timeSpan.getApiString());
+            Request request = new Request("/te/graph/", getId(), "/", timeSpan.getApiString()).setReturnResponse(false);
+            JSONObject response = getConnection().request(request);
 
             // "response": [
             //   { "t": "2013-07-16 12:00", "te+": 26.9, "te-": 21.1, "hu+": 60, "hu-": 55},
@@ -186,7 +188,7 @@ public class HWThermometer extends AbstractHwEntity {
         String fav = BooleanUtils.toStringYesNo(isFavorite());
 
         // /te/edit/<id>/<name>/<channel>/<isFav>
-        getConnection().doGet("/te/edit/", getId(), "/", UrlUtil.encode(getName()), "/", getChannel(), "/", fav);
+        getConnection().request("/te/edit/", getId(), "/", UrlUtil.encode(getName()), "/", getChannel(), "/", fav);
     }
 
 }

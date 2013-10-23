@@ -5,7 +5,8 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -37,7 +38,8 @@ public class SceneManager extends AbstractManager<HWScene> {
     @Override
     public void init(boolean forceReload) throws HWException {
         if (!initialized || forceReload) {
-            JSONObject response = connection.doGetResp(false, "/gplist");
+            Request request = new Request("/gplist").setReturnResponse(false);
+            JSONObject response = connection.request(request);
 
             // "response": [
             //   {"id": 0, "name": "Alle lampen", "favorite": "no"},

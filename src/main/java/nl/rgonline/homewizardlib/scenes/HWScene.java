@@ -6,8 +6,9 @@ import java.util.Set;
 
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWAction;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.Refreshable;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.timers.Day;
 import nl.rgonline.homewizardlib.timers.HWTimer;
@@ -51,7 +52,7 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
                 // /gp/get/1/codes
                 // "response": [ "J1"]
                 codes = new LinkedList<>();
-                JSONObject response = getConnection().doGetResp(false, "/gp/get/", getId(), "/codes");
+                JSONObject response = getConnection().request(new Request("/gp/get/", getId(), "/codes").setReturnResponse(false));
                 JSONArray arr = response.getJSONArray("response");
                 for (int i=0; i < arr.length(); i++) {
                     codes.add(arr.getString(i));
@@ -59,7 +60,7 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
 
                 // Switches: /gp/get/1/switches
                 switches = new LinkedList<>();
-                response = getConnection().doGetResp(false, "/gp/get/", getId(), "/switches");
+                response = getConnection().request(new Request("/gp/get/", getId(), "/switches").setReturnResponse(false));
                 arr = response.getJSONArray("response");
                 for (int i=0; i < arr.length(); i++) {
                     switches.add(readSwitch(arr.getJSONObject(i)));
@@ -67,7 +68,7 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
 
                 // Timers: /gp/get/1/timers
                 timers = new LinkedList<>();
-                response = getConnection().doGetResp(false, "/gp/get/", getId(), "/timers");
+                response = getConnection().request(new Request("/gp/get/", getId(), "/timers").setReturnResponse(false));
                 arr = response.getJSONArray("response");
                 for (int i=0; i < arr.length(); i++) {
                     timers.add(readTimer(arr.getJSONObject(i)));
@@ -122,7 +123,7 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
         String fav = BooleanUtils.toStringYesNo(isFavorite());
 
         // /gp/edit/<id>/<name>/<isFav>
-        getConnection().doGet("/gp/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav);
+        getConnection().request("/gp/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav);
     }
 
     /**
@@ -181,7 +182,7 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
      */
     private void toggle(boolean turnOn) throws HWException {
         String onOrOff = (turnOn) ? "on" : "off";
-        getConnection().doGet("/gp/", getId(), "/", onOrOff);
+        getConnection().request("/gp/", getId(), "/", onOrOff);
     }
 
     @Override

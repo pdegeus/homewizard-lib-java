@@ -1,4 +1,4 @@
-package nl.rgonline.homewizardlib;
+package nl.rgonline.homewizardlib.connection;
 
 import java.io.IOException;
 
@@ -46,6 +46,7 @@ public final class HWConnection {
     }
 
     private HttpClient httpClient;
+    private ResponseCache cache;
     private String connectionString;
 
     /**
@@ -54,9 +55,10 @@ public final class HWConnection {
      * @param port Port to connect to.
      * @param password Password to use.
      */
-    HWConnection(String host, int port, String password) {
+    public HWConnection(String host, int port, String password) {
 		this.connectionString = String.format("http://%s:%d/%s", host, port, password);
         this.httpClient = new DefaultHttpClient(CONNECTION_MANAGER);
+        this.cache = new ResponseCache();
 
         HttpParams params = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(params, HWConfig.CONNECT_TIMEOUT.getValue());
@@ -64,80 +66,66 @@ public final class HWConnection {
     }
 
     /**
-     * Perform a GET request to the HomeWizard and return the result.
-     * @param urlParts One or more URL parts.
-     * @return Parsed response.
+     * Perform a simple GET request to the HomeWizard without caching.
+     * @param urlParts String parts to construct URL from.
      * @throws HWException On any IO or JSON error.
      */
-    public JSONObject doGet(Object... urlParts) throws HWException {
-        return doGetResp(true, urlParts);
+    public void request(Object... urlParts) throws HWException {
+        request(new Request(urlParts));
     }
 
     /**
-     * Perform a GET request to the HomeWizard and return the result.
-     * @param returnResponse True to extract the 'response' object, false to return all data.
-     * @param urlParts One or more URL parts.
+     * Perform a request to the HomeWizard and return the result.
+     * @param request Request to perform.
      * @return Parsed response.
      * @throws HWException On any IO or JSON error.
      */
-    public JSONObject doGetResp(boolean returnResponse, Object... urlParts) throws HWException {
+    public JSONObject request(Request request) throws HWException {
         StringBuilder sb = new StringBuilder(connectionString);
-        for (Object urlPart : urlParts) {
+        for (Object urlPart : request.getUrlParts()) {
             sb.append(urlPart);
         }
 
-        log.debug("Performing GET request: {}", sb);
-        return performRequest(new HttpGet(sb.toString()), returnResponse);
-    }
+        String url = sb.toString();
+        long maxAge = request.getMaxAge();
 
-    /**
-     * Perform a POST request to the HomeWizard and return the result.
-     * @param urlParts One or more URL parts.
-     * @return Parsed response.
-     * @throws HWException On any IO or JSON error.
-     */
-    public JSONObject doPost(Object... urlParts) throws HWException {
-        return doPostResp(true, urlParts);
-    }
-
-    /**
-     * Perform a POST request to the HomeWizard and return the result.
-     * @param returnResponse True to extract the 'response' object, false to return all data.
-     * @param urlParts One or more URL parts.
-     * @return Parsed response.
-     * @throws HWException On any IO or JSON error.
-     */
-    public JSONObject doPostResp(boolean returnResponse, Object... urlParts) throws HWException {
-        StringBuilder sb = new StringBuilder(connectionString);
-        for (Object urlPart : urlParts) {
-            sb.append(urlPart);
-        }
-
-        log.debug("Performing POST request: {}", sb);
-        return performRequest(new HttpPost(sb.toString()), returnResponse);
-    }
-	
-	/**
-	 * Does a blocking call to the given URL.
-     * @param request HTTP request to execute.
-	 * @param returnResponse True to extract the 'response' object, false to return all data.
-     * @return Returned data.
-	 * @throws HWException On any IO error.
-	 */
-	private JSONObject performRequest(HttpRequestBase request, boolean returnResponse) throws HWException {
-
-		//Get data
+        //Get from cache if applicable
         String response;
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-        try {
-		    response = httpClient.execute(request, responseHandler);
-        } catch (IOException e) {
-            throw new HWException("HomeWizard IO error", e);
+        if (request.isCacheable() && cache.hasResponse(url, maxAge)) {
+            log.debug("Using cached response for {} {}", request.getMethod(), url);
+            response = cache.get(url);
+        } else {
+            log.debug("Performing {} request: {}", request.getMethod(), url);
+
+            HttpRequestBase req;
+            switch (request.getMethod()) {
+                case GET:
+                    req = new HttpGet(url);
+                    break;
+                case POST:
+                    req = new HttpPost(url);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown method: " + request.getMethod());
+            }
+
+            //Get data
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            try {
+                response = httpClient.execute(req, responseHandler).trim();
+            } catch (IOException e) {
+                throw new HWException("HomeWizard IO error", e);
+            }
+
+            //Add to cache
+            if (request.isCacheable()) {
+                cache.add(url, response);
+            }
         }
 
         //Parse
-        return parse(response.trim(), returnResponse);
-	}
+        return parse(response, request.isReturnResponse());
+    }
 
     /**
      * Reads the server response and returns the parsed JSON data.

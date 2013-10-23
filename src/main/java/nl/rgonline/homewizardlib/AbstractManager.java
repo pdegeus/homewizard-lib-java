@@ -37,6 +37,13 @@ public abstract class AbstractManager<T extends AbstractHwEntity> implements Ref
     protected abstract Map<Integer, T> getEntityMap();
 
     /**
+     * @return Update interval in milliseconds.
+     */
+    protected long getUpdateInterval() {
+        return updateInterval;
+    }
+
+    /**
      * Force a refresh of all data managed by this manager. This does not only update the
      * status of the entities (such as sensor state, which is done automatically), but also
      * reloads the entity list.

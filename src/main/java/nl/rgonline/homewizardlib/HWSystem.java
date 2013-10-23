@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.cameras.CameraManager;
 import nl.rgonline.homewizardlib.config.HWConfig;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.scenes.SceneManager;
 import nl.rgonline.homewizardlib.sensors.SensorManager;
@@ -48,7 +50,7 @@ public class HWSystem {
     private double hwVersion;
 
     /**
-     * Constructor reading connection details from config file..
+     * Constructor reading connection details from config file.
      * @throws HWException On any initialization error.
      */
     public HWSystem() throws HWException {
@@ -80,7 +82,8 @@ public class HWSystem {
      * Read the current HomeWizard status and version.
      */
     private void readStatus() throws HWException {
-        JSONObject status = connection.doGetResp(false, "/get-status");
+        Request request = new Request(1000, "/get-status").setReturnResponse(false);
+        JSONObject status = connection.request(request);
         try {
             hwVersion = status.getDouble("version");
         } catch (JSONException e) {

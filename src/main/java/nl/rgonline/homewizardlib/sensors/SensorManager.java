@@ -5,8 +5,9 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -38,7 +39,8 @@ public class SensorManager extends AbstractManager<HWSensor> {
     @Override
     public void init(boolean forceReload) throws HWException {
         if (!initialized || forceReload) {
-            JSONObject response = connection.doGet("/get-sensors");
+            Request request = new Request(getUpdateInterval(), "/get-sensors");
+            JSONObject response = connection.request(request);
 
             // "kakusensors": [
             //   {"id": 0, "name": "Voordeur", "status": null, "type": "doorbell", "favorite": "no", "timestamp": "00:00"},
@@ -78,7 +80,8 @@ public class SensorManager extends AbstractManager<HWSensor> {
 
     @Override
     protected void updateStatus() throws HWException {
-        JSONObject response = connection.doGet("/get-status");
+        Request request = new Request(getUpdateInterval(), "/get-status");
+        JSONObject response = connection.request(request);
 
         // "kakusensors": [
         //   {"id": 0, "status": null, "timestamp": "00:00"},

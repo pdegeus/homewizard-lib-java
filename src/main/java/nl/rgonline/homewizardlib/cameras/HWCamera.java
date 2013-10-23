@@ -4,7 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.UrlUtil;
 
@@ -43,10 +44,11 @@ public class HWCamera extends AbstractHwEntity {
     @Override
     protected void saveInternal() throws HWException {
         // /cam/edit/<id>/<name>/<host>/<port>/<user>/<pass>
-        getConnection().doGet(
+        Request request = new Request(
             "/cam/edit/", getId(), "/", UrlUtil.encode(getName()), "/", UrlUtil.encode(getHost()), "/",
             getPort(), "/", UrlUtil.encode(getUsername()), "/", UrlUtil.encode(getPassword())
         );
+        getConnection().request(request);
     }
 
 }

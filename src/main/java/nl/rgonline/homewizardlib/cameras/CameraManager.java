@@ -5,7 +5,8 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.JsonUtil;
 
@@ -37,7 +38,8 @@ public class CameraManager extends AbstractManager<HWCamera> {
     @Override
     public void init(boolean force) throws HWException {
         if (!initialized || force) {
-            JSONObject response = connection.doGet("/get-sensors");
+            Request request = new Request(getUpdateInterval(), "/get-sensors");
+            JSONObject response = connection.request(request);
 
             // "cameras": [
             //   {"id": 0, "name": "Testcam", "username": "a", "password": "a", "ip": "192.168.88.244", "port": "80", "presets":[]}

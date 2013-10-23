@@ -11,7 +11,8 @@ import java.util.TreeMap;
 import lombok.Getter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.UrlUtil;
 
@@ -112,7 +113,8 @@ public class HWSensor extends AbstractHwEntity {
      */
     private synchronized void loadLog() throws HWException {
         if (log == null || logNeedsUpdate) {
-            JSONObject response = getConnection().doGetResp(false, "/kks/get/", getId(), "/log");
+            Request request = new Request("/kks/get/", getId(), "/log").setReturnResponse(false);
+            JSONObject response = getConnection().request(request);
 
             // "response": [
             //   { t: "2013-07-16 22:15:04", status: "no"  },
@@ -152,8 +154,7 @@ public class HWSensor extends AbstractHwEntity {
         String fav = BooleanUtils.toStringYesNo(isFavorite());
 
         // /kks/edit/4/<name>/<isFav>
-        getConnection().doGet("/kks/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav);
-
+        getConnection().request("/kks/edit/", getId(), "/", UrlUtil.encode(getName()), "/", fav);
     }
 
 }

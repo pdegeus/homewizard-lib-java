@@ -8,7 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWAction;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -82,10 +83,11 @@ public class HWTimer extends AbstractHwEntity {
         String enabled = BooleanUtils.toStringYesNo(isActive());
 
         // /et/<id>/<action on|off>/<trigger type>/<offset|time>/<days>/<enabled yes|no>
-        getConnection().doGet(
+        Request request = new Request(
             "/et/", getId(), "/", getAction().getApiString(), "/", getTrigger().getApiString(), "/",
             getTimeOrOffset(), "/", dayStr, "/", enabled
         );
+        getConnection().request(request);
     }
 
 }

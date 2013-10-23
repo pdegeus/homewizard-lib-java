@@ -5,8 +5,9 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
-import nl.rgonline.homewizardlib.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.JsonUtil;
 
@@ -39,7 +40,7 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
     @Override
     public void init(boolean forceReload) throws HWException {
         if (!initialized || forceReload) {
-            JSONObject response = connection.doGetResp(false, "/telist");
+            JSONObject response = connection.request(new Request("/telist").setReturnResponse(false));
 
             // "response": [
             //   { "id": 0, "hu": null, "name": "Binnen", "te": null, "favorite": "no", "channel": 2 },
@@ -78,7 +79,7 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
 
     @Override
     protected void updateStatus() throws HWException {
-        JSONObject response = connection.doGetResp(false, "/telist");
+        JSONObject response = connection.request(new Request("/telist").setReturnResponse(false));
 
         // "response": [
         //   { "id": 0, "hu": null, "name": "Binnen", "te": null, "favorite": "no", "channel": 2 },

@@ -7,7 +7,8 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
 import nl.rgonline.homewizardlib.HWAction;
-import nl.rgonline.homewizardlib.HWConnection;
+import nl.rgonline.homewizardlib.connection.HWConnection;
+import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
 import nl.rgonline.homewizardlib.util.JsonUtil;
 
@@ -40,7 +41,8 @@ public class TimerManager extends AbstractManager<HWTimer> {
     @Override
     public void init(boolean forceReload) throws HWException {
         if (!initialized || forceReload) {
-            JSONObject response = connection.doGetResp(false, "/timers");
+            Request request = new Request("/timers").setReturnResponse(false);
+            JSONObject response = connection.request(request);
 
             // "response": [
             //   {"id":0,"gpid":1,"type":"scene","sensor_id":1,"action":"off","trigger":"sunrise","time":"-0","days":[0, 6],"active":"yes"},
