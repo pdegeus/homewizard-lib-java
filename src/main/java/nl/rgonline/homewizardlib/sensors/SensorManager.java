@@ -67,7 +67,12 @@ public class SensorManager extends AbstractManager<HWSensor> {
                     boolean isOn = BooleanUtils.toBoolean(status);
                     String lastEvent = (status == null) ? null : sensorJson.getString("timestamp");
 
-                    HWSensor sensor = new HWSensor(connection, id, name, type, lastEvent, isFavorite, isOn);
+                    HWSensor sensor;
+                    if (type == SensorType.SMOKE) {
+                        sensor= new HWSmokeSensor(connection, id, name, type, lastEvent, isFavorite, isOn);
+                    } else {
+                        sensor = new HWSensor(connection, id, name, type, lastEvent, isFavorite, isOn);
+                    }
                     sensors.put(id, sensor);
                 }
             } catch (JSONException e) {
