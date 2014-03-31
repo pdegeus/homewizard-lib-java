@@ -5,10 +5,11 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rgonline.homewizardlib.AbstractManager;
-import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.config.HWConfig;
+import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.util.HueColor;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONArray;
@@ -43,8 +44,13 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
             JSONObject response = connection.request(request);
 
             // "response": [
-            //   { "id": 0, "status": "on",  "name": "Woonkamer 1", "dimmer": "no", "favorite": "yes", "type": "switch" },
-            //   { "id": 1, "status": "off", "name": "Woonkamer 2", "dimmer": "no", "favorite": "no",  "type": "switch" }
+            //   { "id": 5, "name": "TestDim", "type": "dimmer", "status": "off", "dimlevel": 0, "favorite": "yes" },
+            //   { "id": 6, "name": "Bijkeuken", "type": "switch", "status": "off", "favorite": "no" },
+            //   { "id": 7, "name": "TV kast", "type": "hue", "status": "on", "hue_id": 0, "light_id": 3,
+            //     "color": {
+            //       "hue": 76, "sat": 92, "bri": 79
+            //     }, "favorite": "no"
+            //   }
             // ]
 
             try {
@@ -60,14 +66,23 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
                     String name = switchJson.getString("name");
                     boolean isFavorite = BooleanUtils.toBoolean(switchJson.getString("favorite"));
                     boolean isOn = BooleanUtils.toBoolean(switchJson.getString("status"));
+                    SwitchType type = SwitchType.forString(switchJson.getString("type"));
 
-                    if (switchJson.getString("dimmer").equals("no")) {
-                        HWSwitch theSwitch = new HWSwitch(connection, id, name, isFavorite, isOn);
-                        switches.put(id, theSwitch);
-                    } else {
-                        int dimlevel = switchJson.getInt("dimlevel");
-                        HWDimmer dimmer = new HWDimmer(connection, id, name, isFavorite, isOn, dimlevel);
-                        switches.put(id, dimmer);
+                    switch (type) {
+                        case STANDARD:
+                            HWSwitch theSwitch = new HWSwitch(connection, id, name, isFavorite, isOn);
+                            switches.put(id, theSwitch);
+                            break;
+                        case DIMMER:
+                            int dimlevel = switchJson.getInt("dimlevel");
+                            HWDimmer dimmer = new HWDimmer(connection, id, name, isFavorite, isOn, dimlevel);
+                            switches.put(id, dimmer);
+                            break;
+                        case HUE_BULB:
+                            HueColor color = new HueColor(switchJson.getJSONObject("color"));
+                            HWHueBulb hue = new HWHueBulb(connection, id, name, isFavorite, isOn, color);
+                            switches.put(id, hue);
+                            break;
                     }
 
                 }
@@ -85,8 +100,9 @@ public class SwitchManager extends AbstractManager<HWSwitch> {
         JSONObject response = connection.request(request);
 
         // "switches": [
-        //   {"id": 0, "status": "on" },
-        //   {"id": 1, "status": "off"}
+        //   { "id": 5, "type": "dimmer", "status": "off", "dimlevel": 0 },
+        //   { "id": 6, "type": "switch", "status": "off" },
+        //   { "id": 7, "type": "hue", "status": "on", "color": { "hue": 76, "sat": 92, "bri": 79 } }
         // ]
 
         try {

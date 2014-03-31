@@ -39,9 +39,24 @@ public class HWSwitch extends AbstractHwEntity {
 
     /**
      * @return True if this switch is a dimmer.
+     * @deprecated  Use {@link #getType()} to determine the switch type.
      */
+    @Deprecated
     public boolean isDimmer() {
         return false;
+    }
+
+    /**
+     * Indicates the switch type. All switches support the standard on/off actions. For more specific actions, case the switch to
+     * the right class:
+     * <ul>
+     *     <li>{@link SwitchType#DIMMER}: {@link HWDimmer}</li>
+     *     <li>{@link SwitchType#HUE_BULB}: {@link HWHueBulb}</li>
+     * </ul>
+     * @return The type of this switch.
+     */
+    public SwitchType getType() {
+        return SwitchType.STANDARD;
     }
 
     /**
@@ -83,7 +98,7 @@ public class HWSwitch extends AbstractHwEntity {
 	}
 
     /**
-     * Toggles this switch. Equivalent to http://<ip>/<password>/sw/<id>/<on|off>
+     * Toggles this switch. Equivalent to http://[ip]/[password]/sw/[id]/[on|off]
      * @param turnOn True to toggle on, false for off.
      * @throws HWException On IO failures.
      */

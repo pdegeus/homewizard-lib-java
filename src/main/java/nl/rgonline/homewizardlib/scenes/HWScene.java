@@ -6,14 +6,16 @@ import java.util.Set;
 
 import nl.rgonline.homewizardlib.AbstractHwEntity;
 import nl.rgonline.homewizardlib.HWAction;
-import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.Refreshable;
+import nl.rgonline.homewizardlib.connection.HWConnection;
 import nl.rgonline.homewizardlib.connection.Request;
 import nl.rgonline.homewizardlib.exceptions.HWException;
+import nl.rgonline.homewizardlib.switches.SwitchType;
 import nl.rgonline.homewizardlib.timers.Day;
 import nl.rgonline.homewizardlib.timers.HWTimer;
 import nl.rgonline.homewizardlib.timers.TimerSubject;
 import nl.rgonline.homewizardlib.timers.TimerTrigger;
+import nl.rgonline.homewizardlib.util.HueColor;
 import nl.rgonline.homewizardlib.util.UrlUtil;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -83,22 +85,28 @@ public class HWScene extends AbstractHwEntity implements Refreshable {
     }
 
     private HWSceneSwitch readSwitch(JSONObject switchJson) throws JSONException, HWException {
-        // "response": [ {"type":"switch","id":3,"name":"TestSch","onstatus":1,"offstatus":0,"dimmer":"no"} ]
+        // "response": [
+        //   { "type": "switch", "id": 6, "name": "Bijkeuken", "onstatus": 1, "offstatus": 0 },
+        //   { "type": "hue", "id": 7, "name": "TV kast", "onstatus": 1,"oncolor": { "hue": 176, "sat": 11, "bri": 100 }, "offstatus": 0 }
+        // }
 
-        //Check type
-        String type = switchJson.getString("type");
-        if (!type.equals("switch")) {
-            throw new HWException("Unknown switch type: " + type);
-        }
 
-        //Read data
         int id = switchJson.getInt("id");
         String name = switchJson.getString("name");
+        SwitchType type = SwitchType.forString(switchJson.getString("type"));
         HWAction sceneOnAction = HWAction.forNumber(switchJson.getInt("onstatus"));
         HWAction sceneOffAction = HWAction.forNumber(switchJson.getInt("offstatus"));
-        boolean isDimmer = BooleanUtils.toBoolean(switchJson.getString("dimmer"));
 
-        return new HWSceneSwitch(id, name, sceneOnAction, sceneOffAction, isDimmer);
+        HWSceneSwitch hwSwitch = new HWSceneSwitch(id, type, name, sceneOnAction, sceneOffAction);
+
+        if (switchJson.has("oncolor")) {
+            hwSwitch.setSceneOnColor(new HueColor(switchJson.getJSONObject("oncolor")));
+        }
+        if (switchJson.has("offcolor")) {
+            hwSwitch.setSceneOffColor(new HueColor(switchJson.getJSONObject("offcolor")));
+        }
+
+        return hwSwitch;
     }
 
     private HWTimer readTimer(JSONObject timerJson) throws JSONException {
