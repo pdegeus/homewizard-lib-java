@@ -15,6 +15,19 @@
         <slf4j.version>1.7.2</slf4j.version>
     </properties>
 
+    <developers>
+        <developer>
+            <name>Pepijn de Geus</name>
+            <email>pepijn@dvelop.nl</email>
+            <url>https://dvelop.nl</url>
+            <id>pdegeus</id>
+        </developer>
+        <developer>
+            <name>Ruud Greven</name>
+            <url>https://github.com/ruudgreven</url>
+        </developer>
+    </developers>
+
     <dependencies>
 
         <dependency>
@@ -117,7 +130,26 @@
                 </configuration>
             </plugin>
 
+            <!-- Git Flow plugin -->
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jgitflow-plugin</artifactId>
+                <version>1.0-alpha27</version>
+                <configuration>
+                    <flowInitContext>
+                        <masterBranchName>master</masterBranchName>
+                        <developBranchName>develop</developBranchName>
+                    </flowInitContext>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
+
+    <scm>
+        <url>https://github.com/pdegeus/homewizard-lib-java</url>
+        <connection>scm:git:git://github.com/pdegeus/homewizard-lib-java.git</connection>
+        <developerConnection>scm:git:git@github.com:pdegeus/homewizard-lib-java</developerConnection>
+    </scm>
 
 </project>
