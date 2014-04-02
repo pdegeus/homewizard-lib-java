@@ -31,12 +31,18 @@ public class HWDimmer extends HWSwitch {
 	}
 
     @Override
+    public SwitchType getType() {
+        return SwitchType.DIMMER;
+    }
+
+    @Override
     public boolean isDimmer() {
         return true;
     }
 
     /**
      * Sets dim-level of this dimmer. Updates HomeWizard immediately (no need to call {@link #saveChanges()}.
+     * Equivalent of http://[ip]/[password]/sw/dim/[id]/[dim-level].
      * @param dimLevel New dim-level.
      * @throws HWException On IO failures.
      */

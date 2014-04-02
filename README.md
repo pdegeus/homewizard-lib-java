@@ -28,11 +28,12 @@ Current status
 --------------
 
 Currently, this library supports reading data about:
-* Switches
+* Switches (standard, dimmers and Philips Hue bulbs)
 * Sensors
 * Scenes (including codes, switches and timers)
 * Cameras
 * Thermometers (current value and graph data)
 * Timers
  
-Switches can be toggles or dimmed. HomeWizard management, like adding switches, is not possible at this moment.
+Switches can be toggled, dimmed and changed color (the latter Hue only, obviously).
+HomeWizard management, like adding switches, is not possible at this moment.

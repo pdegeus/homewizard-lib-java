@@ -79,7 +79,8 @@ public class ThermoManager extends AbstractManager<HWThermometer> {
 
     @Override
     protected void updateStatus() throws HWException {
-        JSONObject response = connection.request(new Request("/telist").setReturnResponse(false));
+        Request request = new Request(getUpdateInterval(), "/telist").setReturnResponse(false);
+        JSONObject response = connection.request(request);
 
         // "response": [
         //   { "id": 0, "hu": null, "name": "Binnen", "te": null, "favorite": "no", "channel": 2 },
