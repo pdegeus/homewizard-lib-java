@@ -4,7 +4,7 @@
 
     <groupId>nl.rgonline</groupId>
     <artifactId>homewizard-lib-java</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
 
     <name>homewizard-lib-java</name>
     <description>HomeWizard home automation control library</description>
